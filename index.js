@@ -8,7 +8,8 @@
 require('./site/index.html')
 // Apply the styles in style.css to the page.
 require('./site/style.css')
-require('./es6/index.js')
+const utils = require('./es6/utils.js')
+console.log('>> utils', utils)
 // if you want to use es6, you can do something like
 //     require('./es6/myEs6code')
 // here to load the myEs6code.js file, and it will be automatically transpiled.
@@ -24,14 +25,21 @@ client.debug = function (msg) {
   }
 }
 
+const collection = new utils.Collection([]);
 function connectCallback() {
   document.getElementById('stomp-status').innerHTML = "It has now successfully connected to a stomp server serving price updates for some foreign exchange currency pairs."
   client.subscribe('/fx/prices', function (frame) {
+    // const data = JSON.parse(frame.body);
+    collection.push(new utils.Data(frame.body))
+    window.collection = collection;
+    utils.buildRows(collection);
+    // dataArray.push(utils.parseFrame);
+    // utils.addRow(utils.parseFrame(frame.body))
   })
 }
 
 client.connect({}, connectCallback, function (error) {
-  alert(error.headers.message)
+  alert(error.headers.message);
 })
 
 

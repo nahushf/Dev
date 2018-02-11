@@ -1,0 +1,144 @@
+function isEmpty(obj) {
+    return !obj || !Object.keys(obj).length;
+}
+
+function createElement(parent, tagName, props) {
+    const element = document.createElement(tagName)
+    if (!isEmpty(props)) {
+        Object.keys(props).forEach(key => {
+            element[key] = props[key];
+        })
+    }
+    parent.appendChild(element)
+    return element;
+}
+
+export function parseFrame(objString) {
+    if (!isEmpty(objString)) {
+        return new Data(objString);
+    }
+}
+
+export function addRow(data) {
+    if (isEmpty(data)) {
+        return;
+    }
+    const { name, bestBid, bestAsk, openBid, openAsk, lastChangeAsk, lastChangeBid } = data;
+    const existingNode = document.getElementById(data.name)
+    if (existingNode) {
+        existingNode.innerHTML = `<tr id="${data.name}">
+            <td>${name}</td>
+            <td>${bestBid}</td>
+            <td>${bestAsk}</td>
+            <td>${lastChangeBid}</td>
+            <td>${lastChangeAsk}</td>
+        </tr>`
+        return;
+    }
+
+    return createElement(document.getElementById('price-table'), 'tr', {
+        id: data.name,
+        innerHTML: `<td>${data.name}</td>
+            <td></td>
+        `
+    })
+}
+
+
+export function buildRows(collection) {
+    const { array } = collection;
+    if (isEmpty(array)) {
+        return;
+    }
+
+    document.querySelector('#price-table tbody#content').remove()
+
+    createElement(document.getElementById('price-table'), 'tbody', {
+        innerHTML: `${array.map(element => element.renderRow()).join('')}`,
+        id: 'content'
+    });
+
+    array.forEach(element => {
+        console.log('>> sparklineArray', element.sparklineArray)
+        Sparkline.draw(document.getElementById(`sparkline-${element.name}`), element.sparklineArray)
+    });
+
+}
+
+export class Collection {
+    constructor(array) {
+        if (isEmpty(array)) {
+            this._collection = {};
+        }
+        array.forEach(this.push);
+    }
+
+    push(element) {
+        const { name } = element;
+        const { _collection } = this;
+        if (_collection[name]) {
+            _collection[name].update(element);
+            return;
+        }
+        _collection[name] = element;
+    }
+
+    get array() {
+        const elements = [];
+        Object.keys(this._collection).forEach(key => {
+            elements.push(this._collection[key]);
+        })
+
+        return elements.sort((a, b) => {
+            return a.lastChangeBid < b.lastChangeBid ? -1 : (a.lastChangeBid > b.lastChangeBid ? 1 : 0)
+        });
+    }
+
+}
+
+export class Data {
+    constructor(obj) {
+        this.setValues(JSON.parse(obj));
+        this.sparklineArray = [];
+        for (let i = 0; i < 5; i++) {
+            this.sparklineArray.push(0);
+        }
+        this.sparklineArray.push(this.midPrice);
+    }
+
+    get midPrice() {
+        const { bestBid, bestAsk } = this;
+        return (bestBid + bestAsk) / 2;
+    }
+
+    setValues({ name, bestBid, bestAsk, openBid, openAsk, lastChangeBid, lastChangeAsk }) {
+        this.name = name;
+        this.bestBid = bestBid;
+        this.bestAsk = bestAsk;
+        this.openBid = openBid;
+        this.openAsk = openAsk;
+        this.lastChangeBid = lastChangeBid;
+        this.lastChangeAsk = lastChangeAsk;
+    }
+
+    update(obj) {
+        this.setValues(obj);
+        if (this.sparklineArray.length === 30 || this.sparklineArray[0] === 0) {
+            this.sparklineArray.shift();
+        }
+        this.sparklineArray.push(this.midPrice);
+    }
+
+    renderRow() {
+        const { name, bestBid, bestAsk, lastChangeBid, lastChangeAsk } = this;
+        return `<tr id="${name}">
+            <td>${name}</td>
+            <td>${bestBid}</td>
+            <td>${bestAsk}</td>
+            <td>${lastChangeBid}</td>
+            <td>${lastChangeAsk}</td>
+            <td id="sparkline-${name}"></td>
+        </tr>`;
+    }
+
+}

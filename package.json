@@ -7,6 +7,12 @@
     "start": "node ./devserver",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "babel": {
+    "presets": [
+      "es2015",
+      "stage-1"
+    ]
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",

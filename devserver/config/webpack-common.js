@@ -2,7 +2,7 @@ const stylelint = require('stylelint')
 const cssLintRules = require('./csslint.json')
 const path = require('path')
 
-module.exports = function(entries, output, includes) {
+module.exports = function (entries, output, includes) {
   const babelLoaderConfig = {
     test: /\.jsx?$/,
     loader: 'babel',
@@ -35,6 +35,7 @@ module.exports = function(entries, output, includes) {
           loaders: ['postcss']
         }
       ],
+      devtool: 'source-map',
       loaders: [
         {
           test: /package\.json$/,
