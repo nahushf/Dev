@@ -27,14 +27,10 @@ client.debug = function (msg) {
 
 const collection = new utils.Collection([]);
 function connectCallback() {
-  document.getElementById('stomp-status').innerHTML = "It has now successfully connected to a stomp server serving price updates for some foreign exchange currency pairs."
   client.subscribe('/fx/prices', function (frame) {
-    // const data = JSON.parse(frame.body);
     collection.push(new utils.Data(frame.body))
     window.collection = collection;
     utils.buildRows(collection);
-    // dataArray.push(utils.parseFrame);
-    // utils.addRow(utils.parseFrame(frame.body))
   })
 }
 
