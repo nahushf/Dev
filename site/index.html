@@ -47,6 +47,11 @@
             width: 200px;
             text-align: center;
         }
+
+        .text {
+            font-family: serif;
+            line-height: 1.5;
+        }
     </style>
 </head>
 
@@ -63,6 +68,77 @@
         <tbody id="content"></tbody>
     </table>
 
+    <div class="text">
+        <p>
+            <b>Approach followed</b> -
+            <br /> The logic behind this implementation is as follows
+            <ul>
+                <li>
+                    Each piece of data fetched from the stomp connection is first parsed and the mid price, and sparkline array of values for
+                    that piece of data is calculated
+                </li>
+                <li>
+                    This data is stored in a collection
+                </li>
+                <li>
+                    Now on the subsequent data fetched by stomp, the existing collection is checked for the presence of data for and entity with
+                    the same name. If data already exists, the same object is updated with new values. Else a fresh object
+                    is pushed into the collection
+                </li>
+                <li>
+                    The collection data structure also stores a sorted array representation of all the records fetched so far
+                </li>
+                <li>
+                    This array representation is used to construct the html for the table and this html is then attached to the table node in
+                    html
+                </li>
+                <li>
+                    As an extra I am also highlighting the elements whose lastChangeBig value is either increasing(green) or decreasing (red)
+                </li>
+            </ul>
+        </p>
+        <p>
+            <b>Prospective libraries which would have made the development experience better</b>
+            <ol>
+                <li>
+                    <b>Typescript</b> - The type system provided by typescript helps eliminate a large number of common compile
+                    time errors which end up occupying a lot of time
+                </li>
+                <li>
+                    <b>React</b> - The implementation right now constructs the dom for the entire table, even if the data for
+                    the records has not changed. This introduces a certain degree of wasteful dom operations. React would
+                    be perfect to remove these wasteful operations. The virtual dom implemented by React would only update
+                    those nodes in the html which have changed whenever the data changes
+                </li>
+            </ol>
+        </p>
+        <p>
+            <b>What could be improved in this code:</b>
+            <br> I am aware that this code is nowhere near perfect, but this is the best I could produce given the time I had
+            at my disposal. Here are the possible improvements that I would have worked on, If had some more time on my hands.
+            <ul>
+                <li>
+                    The sorted array returned by the collection data structure could be compared with the previously generated array to assess
+                    exactly which rows have changed and only those rows could be re-rendered. This would reduce the expensive
+                    dom operations
+                </li>
+                <li>
+                    After completing this code, I realized that the approach I followed could be tweaked a bit more. Instead of using separate
+                    data structures for each object and for the collection as a whole, I believe simply operating on the
+                    JSON parsed form of the data in a simple array would have perhaps improved the overall readability of
+                    the code
+                </li>
+                <li>
+                    The code implementation first constructs the table html in a string, then attaches it to the DOM and then individually attaches
+                    the sparkline component for each row. The sparkline component can be modified to return the svg in a
+                    string format so that the table html can be constructed with the sparkline svg and rendered all at once.
+                </li>
+                <li>
+                    Test cases could be added to improve the robustness of the code
+                </li>
+            </ul>
+        </p>
+    </div>
     <script src="bundle.js"></script>
 </body>
 
