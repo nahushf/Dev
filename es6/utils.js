@@ -113,6 +113,9 @@ export class Data {
 
     setValues({ name, bestBid, bestAsk, openBid, openAsk, lastChangeBid, lastChangeAsk }) {
         this.name = name;
+        this.bidClass = lastChangeBid > this.lastChangeBid ? 'increase' : (
+            lastChangeBid < this.lastChangeBid ? 'decrease' : ''
+        );
         this.bestBid = bestBid;
         this.bestAsk = bestAsk;
         this.openBid = openBid;
@@ -130,14 +133,14 @@ export class Data {
     }
 
     renderRow() {
-        const { name, bestBid, bestAsk, lastChangeBid, lastChangeAsk } = this;
+        const { name, bestBid, bestAsk, lastChangeBid, lastChangeAsk, bidClass } = this;
         return `<tr id="${name}">
-            <td>${name}</td>
+            <td class="${bidClass}">${name}</td>
             <td>${bestBid}</td>
             <td>${bestAsk}</td>
-            <td>${lastChangeBid}</td>
+            <td class="${bidClass}">${lastChangeBid}</td>
             <td>${lastChangeAsk}</td>
-            <td id="sparkline-${name}"></td>
+            <td id="sparkline-${name}" className="sparkline-cell"></td>
         </tr>`;
     }
 
