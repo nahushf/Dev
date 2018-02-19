@@ -19,32 +19,6 @@ export function parseFrame(objString) {
     }
 }
 
-export function addRow(data) {
-    if (isEmpty(data)) {
-        return;
-    }
-    const { name, bestBid, bestAsk, openBid, openAsk, lastChangeAsk, lastChangeBid } = data;
-    const existingNode = document.getElementById(data.name)
-    if (existingNode) {
-        existingNode.innerHTML = `<tr id="${data.name}">
-            <td>${name}</td>
-            <td>${bestBid}</td>
-            <td>${bestAsk}</td>
-            <td>${lastChangeBid}</td>
-            <td>${lastChangeAsk}</td>
-        </tr>`
-        return;
-    }
-
-    return createElement(document.getElementById('price-table'), 'tr', {
-        id: data.name,
-        innerHTML: `<td>${data.name}</td>
-            <td></td>
-        `
-    })
-}
-
-
 export function buildRows(collection) {
     const { array } = collection;
     if (isEmpty(array)) {
@@ -58,22 +32,23 @@ export function buildRows(collection) {
         id: 'content'
     });
 
-    array.forEach(element => {
-        console.log('>> sparklineArray', element.sparklineArray)
-        Sparkline.draw(document.getElementById(`sparkline-${element.name}`), element.sparklineArray)
-    });
+    array.forEach(element => Sparkline.draw(
+        document.getElementById(`sparkline-${element.name}`), element.sparklineArray)
+    );
 
 }
 
 export class Collection {
     constructor(array) {
-        if (isEmpty(array)) {
-            this._collection = {};
+        this._collection = {};
+        if (!isEmpty(array)) {
+            array.forEach(this.push);
         }
-        array.forEach(this.push);
+
+        this.push = this.push.bind(this);
     }
 
-    push(element) {
+    push = (element) => {
         const { name } = element;
         const { _collection } = this;
         if (_collection[name]) {
@@ -134,14 +109,14 @@ export class Data {
 
     renderRow() {
         const { name, bestBid, bestAsk, lastChangeBid, lastChangeAsk, bidClass } = this;
-        return `<tr id="${name}">
-            <td class="${bidClass}">${name}</td>
-            <td>${bestBid}</td>
-            <td>${bestAsk}</td>
-            <td class="${bidClass}">${lastChangeBid}</td>
-            <td>${lastChangeAsk}</td>
-            <td id="sparkline-${name}" className="sparkline-cell"></td>
-        </tr>`;
+        return `<tr id="${name}">` +
+            `<td class="${bidClass}">${name}</td>` +
+            `<td>${bestBid}</td>` +
+            `<td>${bestAsk}</td>` +
+            `<td class="${bidClass}">${lastChangeBid}</td>` +
+            `<td>${lastChangeAsk}</td>` +
+            `<td id="sparkline-${name}" className="sparkline-cell"></td>` +
+            `</tr>`;
     }
 
 }

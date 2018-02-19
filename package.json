@@ -5,13 +5,16 @@
   "main": "index.js",
   "scripts": {
     "start": "node ./devserver",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest"
   },
   "babel": {
     "presets": [
       "es2015",
       "stage-1"
     ]
+  },
+  "jest": {
+    "verbose": true
   },
   "keywords": [],
   "author": "",
@@ -24,7 +27,7 @@
     "babel-register": "^6.7.2",
     "css-loader": "^0.23.1",
     "debug": "^2.2.0",
-    "eslint": "^2.8.0",
+    "eslint": "^2.13.1",
     "eslint-loader": "^1.3.0",
     "file-loader": "^0.8.5",
     "fs-extra": "^0.29.0",
@@ -33,9 +36,13 @@
     "stompjs": "^2.3.3",
     "style-loader": "^0.13.1",
     "stylelint": "^6.2.2",
-    "webpack": "^1.13.0",
     "typedarray-to-buffer": "^3.1.2",
-    "yaeti": "0.0.6",
-    "webpack-dev-server": "^1.14.1"
+    "webpack": "^1.13.0",
+    "webpack-dev-server": "^1.14.1",
+    "yaeti": "0.0.6"
+  },
+  "dependencies": {
+    "babel-eslint": "^8.2.1",
+    "jest": "^22.3.0"
   }
 }
