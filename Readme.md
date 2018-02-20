@@ -1,20 +1,6 @@
-DB Updating Table Dev Challenge
-===============================
-
-This module contains a development challenge for DB recruitment.
-
-The instructions are in the site/index.html file.
-
-To view them, run
-
+# Use the following commands to interact with the project.
 ```
-npm install
-npm start
+npm install  // Install dependencies
+npm start    // Run local server (http://localhost:8011)
+npm test     // Run tests
 ```
-
-from within this directory.  This will start a development server (using webpack)
-that supports hot reloading but also provides a stomp/ws endpoint providing fake
-fx updates.
-
-Once you've started the development server, navigate to http://localhost:8011
-to read the task description and get started.
